@@ -2,74 +2,63 @@ package main
 
 import (
 	"fmt"
+	"io/fs"
 	"io/ioutil"
 	"log"
-	"path"
 	"regexp"
 	"time"
 )
 
 func main() {
 	SetupLoggingFormat()
-	log.Printf("Starting Chia Plotting Performance\n")
+	log.Printf("Extracting Chia Plotting Performance From `.plot`s\n")
 	directory := "/Volumes/ChiaPlots/"
-	plots, err := getPlots(directory)
+	err := getPlots(directory)
 	if err != nil {
 		log.Fatal(err)
 	}
-	if len(plots) == 0 {
-		log.Printf("%v\n", plots)
-
-	}
 }
 
-func getPlots(dir string) ([]string, error) {
+func getPlots(dir string) error {
 	//Important Note: ReadDir guarantees order by filename
 	files, err := ioutil.ReadDir(dir)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// map each os.FileInfo to a full path
-	var filenames []string // == nil
 	for _, file := range files {
-		filename := path.Join(dir, file.Name())
 		// log.Printf("Considering %s\n", file.Name())
+		onePlot(file)
 
-		// re := regexp.MustCompile(`plot-k32-(?P<Y>\d{4})-(?P<M>\d{2})-(?P<D>\d{2})-(?P<h>\d{2})-(?P<m>\d{2})-(?P<Digest>[[:xdigit:]]{64})\.plot`)
-		re := regexp.MustCompile(`plot-k32-(?P<YMDHM>\d{4}-\d{2}-\d{2}-\d{2}-\d{2})-[[:xdigit:]]{64}\.plot`)
-
-		matches := re.FindStringSubmatch(file.Name())
-		if matches == nil {
-			continue
-		}
-		// fmt.Printf("%#v\n", matches)
-		// fmt.Printf("%#v\n", re.SubexpNames())
-		// Y, _ := strconv.Atoi(matches[re.SubexpIndex("Y")])
-		// M, _ := strconv.Atoi(matches[re.SubexpIndex("M")])
-		// D, _ := strconv.Atoi(matches[re.SubexpIndex("D")])
-		// h, _ := strconv.Atoi(matches[re.SubexpIndex("h")])
-		// m, _ := strconv.Atoi(matches[re.SubexpIndex("m")])
-		// start := time.Date(Y, M, D, h, m, 0, 0, time.Local)
-		YMDHM := matches[re.SubexpIndex("YMDHM")]
-		start, err := time.ParseInLocation("2006-01-02-15-04", YMDHM, time.Local)
-		if err != nil {
-			fmt.Println(err)
-			continue
-			// return nil, err
-		}
-		end := file.ModTime()
-		elapsed := end.Sub(start)
-		fmt.Printf("Start: %v End: %v Elapsed: %v\n", start, end, elapsed)
-
-		filenames = append(filenames, filename)
 	}
 
-	return filenames, nil
+	return nil
+}
+
+func onePlot(file fs.FileInfo) {
+	re := regexp.MustCompile(`plot-k32-(?P<YMDHM>\d{4}-\d{2}-\d{2}-\d{2}-\d{2})-[[:xdigit:]]{64}\.plot`)
+
+	matches := re.FindStringSubmatch(file.Name())
+	if matches == nil {
+		return
+	}
+	YMDHM := matches[re.SubexpIndex("YMDHM")]
+	start, err := time.ParseInLocation("2006-01-02-15-04", YMDHM, time.Local)
+	if err != nil {
+		fmt.Println(err)
+		return
+
+	}
+	end := file.ModTime()
+	elapsed := end.Sub(start)
+
+	fmt.Printf("[ %s - %s ]: %v\n", start.Format(fmtRFC3339Local), end.Format(fmtRFC3339Local), elapsed)
 }
 
 // logging setup
 const (
+	fmtRFC3339Local  = "2006-01-02T15:04:05"
 	fmtRFC3339Millis = "2006-01-02T15:04:05.000Z07:00"
 )
 
