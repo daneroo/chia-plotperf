@@ -53,7 +53,7 @@ sleep 5400; chia plots create -k 32 -b 3400 -r 2 -t /Volumes/Space/ChiaTemp/ -d 
 
 ### DaVinci (DaVinciTM20)
 
-- staggered by 1hr on HDD - /Volumes/DaVinciTM20/ChiaTemp/ 
+- staggered by 1hr on HDD - /Volumes/DaVinciTM20/ChiaTemp/
 
 ```bash
 # in screen
@@ -63,8 +63,8 @@ sleep 3600; chia plots create -k 32 -b 4000 -r 2 -t /Volumes/DaVinciTM20/ChiaTem
 
 plot-k32-2021-05-10-00-01-... start at 00:01 stopped /is junk ?
 plot-k32-2021-05-10-00-07-... start at
-sleep 3600 at 00:23: expect
-plot-k32-2021-05-10-00-30-... 
+sleep 3600 
+plot-k32-2021-05-10-01-22
 ```
 
 ### Chromebook
