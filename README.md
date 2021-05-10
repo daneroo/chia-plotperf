@@ -44,11 +44,14 @@ Performance measured by AJA/BlackMagic/fio
 
 ### Shannon (Space)
 
-- `-b 3400 -r 2` - staggered 90m = 5400 
+- `-b 3400 -r 2` - staggered 90m = 5400
 
 ```bash
 chia plots create -k 32 -b 3400 -r 2 -t /Volumes/Space/ChiaTemp/ -d /Volumes/ChiaPlots/
 sleep 5400; chia plots create -k 32 -b 3400 -r 2 -t /Volumes/Space/ChiaTemp/ -d /Volumes/ChiaPlots/
+
+plot-k32-2021-05-10-01-21
+expected : plot-k32-2021-05-10-02-51 (sleep 5400)
 ```
 
 ### DaVinci (DaVinciTM20)
