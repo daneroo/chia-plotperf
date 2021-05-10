@@ -8,9 +8,69 @@ go build
 
 ## `chia` CLI
 
+### Setup PATH
+
 ```bash
 export PATH=/Applications/Chia.app/Contents/Resources/app.asar.unpacked/daemon:$PATH
 export CHIA_ROOT=~/.chia/mainnet/
+```
+
+### Setup New Worker
+
+```bash
+# apt install ....
+
+chia init
+#Add a private key by mnemonic
+chia keys add 
+```
+
+## Experiments
+
+### TODO
+
+- single on Chromebook - in progress
+- staggered on DaVinci - in progress
+- staggered on Shannon  - /Volumes/Space
+- staggered on Shannon  - /Volumes/Rocket
+- Rocket on Chromebook
+
+### Drives
+
+Performance measured by AJA/BlackMagic/fio
+
+- Drobo CIFS/SMB Mount `/Volumes/ChiaPlots/` : W:70/R:100
+- /Volumes/DaVinciTM20/ChiaTemp/ : W:180/R:160
+
+### Shannon (Space)
+
+- `-b 3400 -r 2` - staggered 90m = 5400 
+
+```bash
+chia plots create -k 32 -b 3400 -r 2 -t /Volumes/Space/ChiaTemp/ -d /Volumes/ChiaPlots/
+sleep 5400; chia plots create -k 32 -b 3400 -r 2 -t /Volumes/Space/ChiaTemp/ -d /Volumes/ChiaPlots/
+```
+
+### DaVinci (DaVinciTM20)
+
+- staggered by 1hr on HDD - /Volumes/DaVinciTM20/ChiaTemp/ 
+
+```bash
+# in screen
+chia plots create -k 32 -b 4000 -r 2 -t /Volumes/DaVinciTM20/ChiaTemp/ -d /Volumes/ChiaPlots/
+# in second screen
+sleep 3600; chia plots create -k 32 -b 4000 -r 2 -t /Volumes/DaVinciTM20/ChiaTemp/ -d /Volumes/ChiaPlots/
+
+plot-k32-2021-05-10-00-01-... start at 00:01 stopped /is junk ?
+plot-k32-2021-05-10-00-07-... start at
+sleep 3600 at 00:23: expect
+plot-k32-2021-05-10-00-30-... 
+```
+
+### Chromebook
+
+```bash
+chia plots create -k 32 -b 4000 -r 2 -t ~/ChiaTemp -d ~/ChiaPlots
 ```
 
 ## Example Output
