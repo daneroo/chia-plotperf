@@ -41,17 +41,48 @@ Performance measured by AJA/BlackMagic/fio
 
 - Drobo CIFS/SMB Mount `/Volumes/ChiaPlots/` : W:70/R:100
 - /Volumes/DaVinciTM20/ChiaTemp/ : W:180/R:160
+- /Volumes/Rocket/ChiaTemp/ : W:422/R:416 (MacOS Journaled) W:414/R:412 (ExFat)
 
-### Shannon (Space)
+### Shannon
 
-- `-b 3400 -r 2` - staggered 90m = 5400
+- 2X - `-b 3400 -r 2` - staggered 90m = 5400 /Volumes/Space/ChiaTemp/ 
 
 ```bash
 chia plots create -k 32 -b 3400 -r 2 -t /Volumes/Space/ChiaTemp/ -d /Volumes/ChiaPlots/
 sleep 5400; chia plots create -k 32 -b 3400 -r 2 -t /Volumes/Space/ChiaTemp/ -d /Volumes/ChiaPlots/
 
-plot-k32-2021-05-10-01-21
-expected : plot-k32-2021-05-10-02-51 (sleep 5400)
+[ 2021-05-10T01:21:00 - 2021-05-11T01:49:20 ]: 24h28m20s (1h01 hour to move to Drobo)
+[ 2021-05-10T02:52:00 - 2021-05-11T03:25:05 ]: 24h33m5s
+```
+
+- 3X4 `-b 3400 -r 2 -n 4` - staggered 120m,240m = 7200,14400, /Volumes/Rocket/ChiaTemp/
+
+```bash
+chia plots create -k 32 -b 3400 -r 2 -n 4 -t /Volumes/Rocket/ChiaTemp -d /Volumes/ChiaPlots/
+sleep 7200; chia plots create -k 32 -b 3400 -r 2 -n 4 -t /Volumes/Rocket/ChiaTemp -d /Volumes/ChiaPlots/
+sleep 14400; chia plots create -k 32 -b 3400 -r 2 -n 4 -t /Volumes/Rocket/ChiaTemp -d /Volumes/ChiaPlots/
+
+# expecting 03:30, 05:30, 07:30
+[ 2021-05-11T03:30:00 - 2021-05-12T05:25:40 ]: 25h55m40s
+[ 2021-05-11T05:31:00 - 2021-05-12T18:44:45 ]: 37h13m45s
+[ 2021-05-11T07:31:00 - 2021-05-12T16:19:27 ]: 32h48m27s
+
+single on Shannon from GUI -b 3390 -r 4 /Volumes/Space/ChiaTemp
+[ 2021-05-12T22:13:00 - 2021-05-13T10:24:43 ]: 12h11m43s
+2 sequential on Shannon from GUI -b 3400 -r 4 /Volumes/Space/ChiaTemp
+expect 2021-05-13T16:55, 2021-05-14T05:05 done at 2021-05-14T17:15
+
+# plotman could save the trasport time (1hr)
+```
+
+### Feynman (/Volumes/Rocket) - as SS-USB 400MB/s
+
+```bash
+chia plots create -k 32 -b 3400 -r 4 -t /Volumes/Rocket/ChiaTemp/ -d /Volumes/ChiaPlots/
+
+[ 2021-05-12T22:02:00 - 2021-05-13T06:38:02 ]: 8h36m2s (transport excluded) front USB-C
+expect 2021-05-13T16:44 done 2021-05-14T01:20 (unless new usb port is faster!)
+Then stagger and perhaps use plotman ... 
 ```
 
 ### DaVinci (DaVinciTM20)
@@ -64,10 +95,9 @@ chia plots create -k 32 -b 4000 -r 2 -t /Volumes/DaVinciTM20/ChiaTemp/ -d /Volum
 # in second screen
 sleep 3600; chia plots create -k 32 -b 4000 -r 2 -t /Volumes/DaVinciTM20/ChiaTemp/ -d /Volumes/ChiaPlots/
 
-plot-k32-2021-05-10-00-01-... start at 00:01 stopped /is junk ?
-plot-k32-2021-05-10-00-07-... start at
-sleep 3600 
-plot-k32-2021-05-10-01-22
+[ 2021-05-10T00:07:00 - 2021-05-10T19:48:29 ]: 19h41m29s
+[ 2021-05-10T01:22:00 - 2021-05-10T20:22:56 ]: 19h0m56s
+
 ```
 
 ### Chromebook
