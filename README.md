@@ -120,3 +120,17 @@ chia plots create -k 32 -b 4000 -r 2 -t ~/ChiaTemp -d ~/ChiaPlots
 [ 2021-05-07T20:25:00 - 2021-05-08T14:56:51 ]: 18h31m51s
 [ 2021-05-08T05:06:00 - 2021-05-08T12:46:07 ]: 7h40m7s
 ```
+
+## Plotman
+
+- [Plotman](https://github.com/ericaltendorf/plotman)
+
+THis should be in a venv...
+
+```bash
+pip install --force-reinstall git+https://github.com/ericaltendorf/plotman@main
+# make a config for the machine: 
+# Wrote default plotman.yaml to: /Users/daniel/Library/Application Support/plotman/plotman.yaml
+plotman config generate 
+plotman config path # shows where the file is located (~/Library/Application Support/plotman/..)
+```
