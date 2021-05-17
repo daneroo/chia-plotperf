@@ -16,7 +16,8 @@ directories:
         # reads these logs on a regular basis, so using a fast drive is
         # recommended.
         # log: /home/chia/chia/logs
-        log: /Volumes/Rocket/ChiaLogs
+        # log: /Volumes/Rocket/ChiaLogs
+        log: /chia/logs
 
         # One or more directories to use as tmp dirs for plotting.  The
         # scheduler will use all of them and distribute jobs among them.
@@ -26,7 +27,11 @@ directories:
         # If multiple directories share a common prefix, reports will
         # abbreviate and show just the uniquely identifying suffix.
         tmp:
-                - /Volumes/Rocket/ChiaTemp
+                #- /Volumes/Rocket/ChiaTemp
+                #- /Volumes/Rocket4/ChiaTemp
+                - /mnt/feynman/rocketQ/00
+                - /mnt/feynman/rocket4/00
+                #- /mnt/feynman/rocket4/01
                 # - /mnt/tmp/00
                 # - /mnt/tmp/01
                 # - /mnt/tmp/02
@@ -48,14 +53,16 @@ directories:
         # Optional: tmp2 directory.  If specified, will be passed to
         # chia plots create as -2.  Only one tmp2 directory is supported.
         # tmp2: /mnt/tmp/a
+        # tmp2: /mnt/tmp/a
 
         # One or more directories; the scheduler will use all of them.
         # These again are presumed to be on independent physical devices,
         # so writes (plot jobs) and reads (archivals) can be scheduled
         # to minimize IO contention.
         dst:
-                - /Volumes/ChiaPlots
-                # - /mnt/dst/00
+                #- /Volumes/ChiaPlots
+                - /mnt/feynman/dst/00
+                # - /mnt/feynman/dst/01
                 # - /mnt/dst/01
 
         # Archival configuration.  Optional; if you do not wish to run the
@@ -103,11 +110,11 @@ scheduling:
 
         # Don't run more than this many jobs at a time on a single temp dir.
         # tmpdir_max_jobs: 3
-        tmpdir_max_jobs: 1
+        tmpdir_max_jobs: 3
 
         # Don't run more than this many jobs at a time in total.
         # global_max_jobs: 12
-        global_max_jobs: 0
+        global_max_jobs: 6
 
         # Don't run any jobs (across all temp dirs) more often than this, in minutes.
         global_stagger_m: 30
