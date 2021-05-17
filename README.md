@@ -43,7 +43,22 @@ Performance measured by AJA/BlackMagic/fio
 - /Volumes/DaVinciTM20/ChiaTemp/ : W:180/R:160
 - /Volumes/Rocket/ChiaTemp/ : W:422/R:416 (MacOS Journaled) W:414/R:412 (ExFat)
 
-### Shannon
+### Disk Speed
+
+```bash
+# https://blog.purestorage.com/purely-technical/io-plumbing-tests-with-fio/
+# us posixaio instead of libaio to work on macos
+fio --name=seqwrite --rw=write --direct=1 --ioengine=posixaio --bs=32k --numjobs=4 --size=2G --runtime=600 --group_reporting
+fio --name=seqread --rw=read --direct=1 --ioengine=posixaio --bs=32k --numjobs=4 --size=2G --runtime=600 --group_reporting
+
+## hdparm just read
+sudo hdparm -Tt /dev/sdXXX
+
+## 4G just Write
+dd if=/dev/zero of=./largefile bs=1M count=4096
+```
+
+### Shannon (Space)
 
 - 2X - `-b 3400 -r 2` - staggered 90m = 5400 /Volumes/Space/ChiaTemp/ 
 
@@ -77,6 +92,8 @@ expect 2021-05-13T16:55, 2021-05-14T05:05 done at 2021-05-14T17:15
 
 ### Feynman (/Volumes/Rocket) - as SS-USB 400MB/s
 
+Dell G5 Gaming PC - Abyss Black (Intel Core i7-10700F/1TB SSD/16GB RAM/RTX 2060 Super)
+
 ```bash
 chia plots create -k 32 -b 3400 -r 4 -t /Volumes/Rocket/ChiaTemp/ -d /Volumes/ChiaPlots/
 
@@ -104,12 +121,14 @@ sleep 3600; chia plots create -k 32 -b 4000 -r 2 -t /Volumes/DaVinciTM20/ChiaTem
 
 ```bash
 chia plots create -k 32 -b 4000 -r 2 -t ~/ChiaTemp -d ~/ChiaPlots
+
+[ 2021-05-09T17:10:00 - 2021-05-10T04:09:54 ]: 10h59m54s
 ```
 
 ## Example Output
 
 ```bash
-2021-05-09T00:21:27.883Z - Extracting Chia Plotting Performance From `.plot`s
+2021-05-10T20:34:46.138Z - Extracting Chia Plotting Performance From `.plot`s
 [ 2021-05-05T15:19:00 - 2021-05-06T13:35:59 ]: 22h16m59s
 [ 2021-05-05T15:19:00 - 2021-05-06T13:30:49 ]: 22h11m49s
 [ 2021-05-06T18:30:00 - 2021-05-07T04:29:56 ]: 9h59m56s
@@ -119,13 +138,19 @@ chia plots create -k 32 -b 4000 -r 2 -t ~/ChiaTemp -d ~/ChiaPlots
 [ 2021-05-07T15:07:00 - 2021-05-08T04:39:38 ]: 13h32m38s
 [ 2021-05-07T20:25:00 - 2021-05-08T14:56:51 ]: 18h31m51s
 [ 2021-05-08T05:06:00 - 2021-05-08T12:46:07 ]: 7h40m7s
+[ 2021-05-08T16:27:00 - 2021-05-09T02:11:43 ]: 9h44m43s
+[ 2021-05-09T02:38:00 - 2021-05-09T12:10:05 ]: 9h32m5s
+[ 2021-05-09T12:10:00 - 2021-05-09T21:38:02 ]: 9h28m2s
+[ 2021-05-09T17:10:00 - 2021-05-10T04:09:54 ]: 10h59m54s
 ```
 
 ## Plotman
 
 - [Plotman](https://github.com/ericaltendorf/plotman)
 
-THis should be in a venv...
+Plotman was installed in the global python 3 space (modified PATH for python3 on Shannon)
+
+This should be in a venv...
 
 ```bash
 pip install --force-reinstall git+https://github.com/ericaltendorf/plotman@main
@@ -134,3 +159,33 @@ pip install --force-reinstall git+https://github.com/ericaltendorf/plotman@main
 plotman config generate 
 plotman config path # shows where the file is located (~/Library/Application Support/plotman/..)
 ```
+
+- Experiment with -2 == -d, might pack more parallell plots into tmp dir
+- resize partition
+- netdata failed
+- [nvme monitoring](https://chiadecentral.com/nuc-small-form-factor-plotting-build/)
+
+## Raid0 Experiment (Euler)
+
+[LVM Striping](https://www.theurbanpenguin.com/striped-lvm-volumes/)
+
+[striped vg](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/logical_volume_manager_administration/stripe_create_ex)
+
+```bash
+# gdisk use partition type Linux LVM = 8E00
+
+pvcreate /dev/sdb1 /dev/sdc1
+pvcreate /dev/sdb1 /dev/sdc1 /dev/sdd1 /dev/sde1
+
+vgcreate vgstripe /dev/sdb1 /dev/sdc1
+vgcreate vgstripe /dev/sdb1 /dev/sdc1 /dev/sdd1 /dev/sde1
+# 1TB stripe/2 - Using default stripesize 64.00 KiB
+lvcreate  -i 2 -L 1T  -n lvstripe vgstripe
+lvconvert --type thin-pool -Zn vgstripe/lvstripe
+
+# undo
+lvremove vgstripe # removes lvstripe
+vgremove vgstripe
+```
+
+[Partition with gdisk](https://www.tecklyfe.com/how-to-partition-format-and-mount-a-disk-on-ubuntu-20-04/)
