@@ -30,8 +30,8 @@ func getPlots(dir string) error {
 	for _, file := range files {
 		// log.Printf("Considering %s\n", file.Name())
 		onePlot(file)
-
 	}
+	log.Printf("Examined %d `.plot`s\n", len(files))
 
 	return nil
 }
