@@ -26,34 +26,36 @@ func getPlots(dir string) error {
 		return err
 	}
 
+	count := 0
 	// map each os.FileInfo to a full path
 	for _, file := range files {
 		// log.Printf("Considering %s\n", file.Name())
-		onePlot(file)
+		count += onePlot(file)
 	}
-	log.Printf("Examined %d `.plot`s\n", len(files))
+	log.Printf("Examined %d `.plot`s\n", count)
 
 	return nil
 }
 
-func onePlot(file fs.FileInfo) {
+func onePlot(file fs.FileInfo) int {
 	re := regexp.MustCompile(`plot-k32-(?P<YMDHM>\d{4}-\d{2}-\d{2}-\d{2}-\d{2})-[[:xdigit:]]{64}\.plot`)
 
 	matches := re.FindStringSubmatch(file.Name())
 	if matches == nil {
-		return
+		return 0
 	}
 	YMDHM := matches[re.SubexpIndex("YMDHM")]
 	start, err := time.ParseInLocation("2006-01-02-15-04", YMDHM, time.Local)
 	if err != nil {
 		fmt.Println(err)
-		return
+		return 0
 
 	}
 	end := file.ModTime()
 	elapsed := end.Sub(start)
 
 	fmt.Printf("[ %s - %s ]: %v\n", start.Format(fmtRFC3339Local), end.Format(fmtRFC3339Local), elapsed)
+	return 1
 }
 
 // logging setup
