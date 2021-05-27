@@ -26,7 +26,8 @@ directories:
         # If multiple directories share a common prefix, reports will
         # abbreviate and show just the uniquely identifying suffix.
         tmp:
-                - /Volumes/Space/ChiaTemp
+                - /Volumes/RocketQ
+                # - /Volumes/Space/ChiaTemp
                 # - /mnt/tmp/00
                 # - /mnt/tmp/01
                 # - /mnt/tmp/02
@@ -107,7 +108,7 @@ scheduling:
 
         # Don't run more than this many jobs at a time in total.
         # global_max_jobs: 12
-        global_max_jobs: 0
+        global_max_jobs: 1
 
         # Don't run any jobs (across all temp dirs) more often than this, in minutes.
         global_stagger_m: 30
