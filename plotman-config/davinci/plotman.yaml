@@ -106,11 +106,11 @@ scheduling:
 
         # Don't run more than this many jobs at a time on a single temp dir.
         # tmpdir_max_jobs: 3
-        tmpdir_max_jobs: 1
+        tmpdir_max_jobs: 3
 
         # Don't run more than this many jobs at a time in total.
         # global_max_jobs: 12
-        global_max_jobs: 1
+        global_max_jobs: 6
 
         # Don't run any jobs (across all temp dirs) more often than this, in minutes.
         global_stagger_m: 30
