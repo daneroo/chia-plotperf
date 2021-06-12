@@ -6,23 +6,113 @@ go run main.go
 go build
 ```
 
+## Syncing logs
+
+```bash
+# from dirac
+rsync -av --progress davinci:Code/iMetrical/chia-plotperf/logs/ ~/Code/iMetrical/chia-plotperf/logs/
+rsync -av --progress shannon:Code/iMetrical/chia-plotperf/logs/ ~/Code/iMetrical/chia-plotperf/logs/
+# from shannon
+rsync -av --progress davinci:Code/iMetrical/chia-plotperf/logs/ ~/Code/iMetrical/chia-plotperf/logs/
+```
+
+## Move plots from drobo to darwin
+
+```txt
+# lsblk --fs # for /sd[bc]
+sdb                                                                                            
+└─sdb1                ext4        ex14-0 9b38d716-5fe4-48b9-9285-6f5696ff29d7      8.6T    27% /mnt/ex14-0
+sdc                                                                                            
+└─sdc1                ext4        ex14-1 c1977674-78f1-4ea4-9729-f00b61d3da60       12T     0% /mnt/ex14-1
+```
+
+```bash
+
+# mount ex14-0, ex14-1, n300-0 by uuid or label...
+# see https://linuxhint.com/mount_partition_uuid_label_linux/
+sudo mount /dev/sdb1 /mnt/ex14-0
+sudo mount /dev/sdc1 /mnt/ex14-1
+sudo mount /dev/sdd1 /mnt/n300-0
+
+
+sudo mount -t cifs -o user=daniel //drobo.imetrical.com/ChiaPlots /mnt/drobo-chiaplots/
+
+rsync -av --progress /mnt/drobo-chiaplots/plot-k32-*.plot /mnt/ex14-0/plots
+```
+
+### Export CIFS/Samba from darwin
+
+- <https://ubuntuhandbook.org/index.php/2020/07/share-folder-smb-ubuntu-20-04/>
+
+Will share with no auth @ smb://darwin.imetrical.com/ChiaPlots[01] nd mount from shannon and davinci
+
+```bash
+sudo emacs /etc/samba/smb.conf
+sudo systemctl restart smbd nmbd
+```
+
+```txt
+[ChiaPlots0]
+   path =  /mnt/ex14-0/plots/
+   writable = yes
+   guest ok = yes
+   guest only = yes
+   create mode = 0777
+   directory mode = 0777
+
+[ChiaPlots1]
+   path =  /mnt/ex14-1/plots/
+   writable = yes
+   guest ok = yes
+   guest only = yes
+   create mode = 0777
+   directory mode = 0777
+
+[ChiaPlots2]
+   path =  /mnt/n300-0/plots/
+   writable = yes
+   guest ok = yes
+   guest only = yes
+   create mode = 0777
+   directory mode = 0777
+```
+
 ## `chia` CLI
 
-### Setup PATH
+### Setup PATH on OSX
 
 ```bash
 export PATH=/Applications/Chia.app/Contents/Resources/app.asar.unpacked/daemon:$PATH
 export CHIA_ROOT=~/.chia/mainnet/
 ```
 
-### Setup New Worker
+### Install on darwin (ubunt0)
+
+- Followed instructions on <https://github.com/Chia-Network/chia-blockchain/wiki/INSTALL#ubuntudebian>
+  - Update instruction below install section above
+- Installed in darwin:~/chia-blockchain
 
 ```bash
-# apt install ....
+cd chia-blockchain
+. ./activate
 
 chia init
 #Add a private key by mnemonic
 chia keys add 
+
+
+chia plots add -d /mnt/ex14-0/plots
+chia plots add -d /mnt/ex14-1/plots
+
+chia start farmer
+
+$ chia start farmer
+chia_harvester: Already running, use `-r` to restart
+chia_farmer: Already running, use `-r` to restart
+chia_full_node: Already running, use `-r` to restart
+chia_wallet: Already running, use `-r` to restart
+
+chia farm summary
 ```
 
 ## Experiments
