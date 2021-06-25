@@ -74,6 +74,14 @@ sudo systemctl restart smbd nmbd
    guest only = yes
    create mode = 0777
    directory mode = 0777
+
+[ChiaPlots3]
+   path =  /mnt/n300-1/plots/
+   writable = yes
+   guest ok = yes
+   guest only = yes
+   create mode = 0777
+   directory mode = 0777
 ```
 
 ## `chia` CLI
