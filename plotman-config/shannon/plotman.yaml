@@ -56,7 +56,9 @@ directories:
         # so writes (plot jobs) and reads (archivals) can be scheduled
         # to minimize IO contention.
         dst:
-                - /Volumes/ChiaPlots
+                - /Volumes/ChiaPlots3
+                # - /Volumes/ChiaPlots1
+                # - /Volumes/ChiaPlots
                 # - /mnt/dst/00
                 # - /mnt/dst/01
 
