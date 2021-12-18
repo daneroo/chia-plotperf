@@ -93,7 +93,7 @@ export PATH=/Applications/Chia.app/Contents/Resources/app.asar.unpacked/daemon:$
 export CHIA_ROOT=~/.chia/mainnet/
 ```
 
-### Install on darwin (ubunt0)
+### Install on darwin (ubuntu)
 
 - Followed instructions on <https://github.com/Chia-Network/chia-blockchain/wiki/INSTALL#ubuntudebian>
   - Update instruction below install section above
@@ -107,9 +107,13 @@ chia init
 #Add a private key by mnemonic
 chia keys add 
 
+# show plotting summary: Directories where plots are being searched for
+chia plots show
 
 chia plots add -d /mnt/ex14-0/plots
 chia plots add -d /mnt/ex14-1/plots
+chia plots add -d /mnt/n300-0/plots
+chia plots add -d /mnt/n300-1/plots
 
 chia start farmer
 
@@ -120,6 +124,15 @@ chia_full_node: Already running, use `-r` to restart
 chia_wallet: Already running, use `-r` to restart
 
 chia farm summary
+
+# show node sync status
+chia show -s
+# chow peers for full node sync
+chia show -c
+# stop all
+chia stop -d all
+# find all running processes
+ps -Af | grep chia
 ```
 
 ## Experiments
