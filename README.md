@@ -115,14 +115,23 @@ chia plots add -d /mnt/ex14-1/plots
 chia plots add -d /mnt/n300-0/plots
 chia plots add -d /mnt/n300-1/plots
 
+
+# optionally adding more peers:
+daniel@darwin:~/.chia/mainnet/config$ grep -in peer_count config.yaml 
+153:  target_outbound_peer_count: 8
+154:  target_peer_count: 80
+292:  target_peer_count: 5
+# to
+153:  target_outbound_peer_count: 8
+154:  target_peer_count: 200
+292:  target_peer_count: 25
+
 chia start farmer
 
-$ chia start farmer
-chia_harvester: Already running, use `-r` to restart
-chia_farmer: Already running, use `-r` to restart
-chia_full_node: Already running, use `-r` to restart
-chia_wallet: Already running, use `-r` to restart
+# logging
+tail -f ~/.chia/mainnet/log/debug.log
 
+# getting info
 chia farm summary
 
 # show node sync status
