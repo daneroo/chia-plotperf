@@ -1,9 +1,23 @@
 # Chia (XCH) Plotting Performance
 
+This chia expermient is terminated.
+This repos is now archived.
+
 ```bash
 go run main.go
 go build
 ```
+
+## Deprecation
+
+This experiment is dead. Re-using drives for new Synology
+
+- Remove setup (SMB and code, and creds) from  darwin
+  - Remove SMB export
+  - Remove /etc/fstab entries
+  - Stop all chia daemons
+  - Remove ~/.chia
+- Reboot darwin
 
 ## Syncing logs
 
